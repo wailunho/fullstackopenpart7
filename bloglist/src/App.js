@@ -20,9 +20,7 @@ const App = () => {
   const addBlogFormRef = useRef()
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(getSortedBlogsByLikes(blogs)))
+    blogService.getAll().then((blogs) => setBlogs(getSortedBlogsByLikes(blogs)))
   }, [])
 
   useEffect(() => {
@@ -73,7 +71,7 @@ const App = () => {
     try {
       const user = await loginService.login({
         username,
-        password,
+        password
       })
       window.localStorage.setItem('user', JSON.stringify(user))
       setUser(user)
@@ -92,7 +90,7 @@ const App = () => {
       const newBlog = await blogService.create({
         title: c.title,
         author: c.author,
-        url: c.url,
+        url: c.url
       })
       setBlogs(getSortedBlogsByLikes(blogs.concat(newBlog)))
       showSuccessMsg(`a new blog ${newBlog.title} by ${newBlog.author} added`)
@@ -113,7 +111,7 @@ const App = () => {
         const newObj = Object.assign({}, blog, { likes: blog.likes + 1 })
         await blogService.update(id, newObj)
         setBlogs(
-          getSortedBlogsByLikes(blogs.map((x) => (x.id === id ? newObj : x))),
+          getSortedBlogsByLikes(blogs.map((x) => (x.id === id ? newObj : x)))
         )
       } catch (e) {
         handleError(e)

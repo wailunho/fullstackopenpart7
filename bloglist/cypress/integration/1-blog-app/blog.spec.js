@@ -52,13 +52,13 @@ describe('Blog app', function () {
     describe('when a blog has created', function () {
       beforeEach(function () {
         const auth = {
-          bearer: JSON.parse(localStorage.getItem('user')).token,
+          bearer: JSON.parse(localStorage.getItem('user')).token
         }
         cy.request({
           method: 'POST',
           url: 'http://localhost:3003/api/blogs',
           body: blog,
-          auth,
+          auth
         }).then(() => {
           cy.visit('http://localhost:3000')
         })
@@ -80,20 +80,20 @@ describe('Blog app', function () {
     describe('when 2 blogs have created', function () {
       beforeEach(function () {
         const auth = {
-          bearer: JSON.parse(localStorage.getItem('user')).token,
+          bearer: JSON.parse(localStorage.getItem('user')).token
         }
         cy.request({
           method: 'POST',
           url: 'http://localhost:3003/api/blogs',
           body: blog,
-          auth,
+          auth
         })
           .then(() => {
             return cy.request({
               method: 'POST',
               url: 'http://localhost:3003/api/blogs',
               body: blog2,
-              auth,
+              auth
             })
           })
           .then(() => {

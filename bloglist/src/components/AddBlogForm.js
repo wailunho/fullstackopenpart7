@@ -11,7 +11,7 @@ const AddBlogForm = forwardRef((props, ref) => {
     url,
     setTitle,
     setAuthor,
-    setUrl,
+    setUrl
   }))
 
   return (

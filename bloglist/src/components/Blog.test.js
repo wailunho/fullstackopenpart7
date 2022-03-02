@@ -12,14 +12,14 @@ const blog = {
   user: {
     username: 'hellas',
     name: 'H Ella',
-    id: '621c2c14e8a090cb5d453652',
+    id: '621c2c14e8a090cb5d453652'
   },
-  id: '621c2c14e8a090cb5d45365a',
+  id: '621c2c14e8a090cb5d45365a'
 }
 const handleLike = () => {}
 const handleDelete = () => {}
 const currentUser = {
-  id: '621c2c14e8a090cb5d453652',
+  id: '621c2c14e8a090cb5d453652'
 }
 
 let container

@@ -9,7 +9,7 @@ const Blog = ({ blog, handleLike, handleDelete, currentUser }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5,
+    marginBottom: 5
   }
 
   const handleToggleView = () => {
@@ -35,7 +35,7 @@ const Blog = ({ blog, handleLike, handleDelete, currentUser }) => {
         <div>{blog.user.name}</div>
         <div
           style={{
-            display: currentUser.username === blog.user.username ? '' : 'none',
+            display: currentUser.username === blog.user.username ? '' : 'none'
           }}
         >
           <button onClick={handleDelete(blog)}>remove</button>
@@ -49,7 +49,7 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   handleLike: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
-  currentUser: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired
 }
 
 export default Blog

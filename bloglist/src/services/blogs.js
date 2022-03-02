@@ -7,7 +7,7 @@ let config = {}
 const setToken = (t) => {
   token = `bearer ${t}`
   config = {
-    headers: { Authorization: token },
+    headers: { Authorization: token }
   }
 }
 
@@ -34,5 +34,5 @@ export default {
   setToken,
   create,
   update,
-  remove,
+  remove
 }
