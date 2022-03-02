@@ -31,10 +31,12 @@ describe('Blog app', function () {
   })
   describe('When logged in', function () {
     beforeEach(function () {
-      cy.request('POST', 'http://localhost:3003/api/login', user).then(res => {
-        localStorage.setItem('user', JSON.stringify(res.body))
-        cy.visit('http://localhost:3000')
-      })
+      cy.request('POST', 'http://localhost:3003/api/login', user).then(
+        (res) => {
+          localStorage.setItem('user', JSON.stringify(res.body))
+          cy.visit('http://localhost:3000')
+        }
+      )
     })
 
     it('A blog can be created', function () {
@@ -50,7 +52,7 @@ describe('Blog app', function () {
     describe('when a blog has created', function () {
       beforeEach(function () {
         const auth = {
-          'bearer': JSON.parse(localStorage.getItem('user')).token,
+          bearer: JSON.parse(localStorage.getItem('user')).token,
         }
         cy.request({
           method: 'POST',
@@ -78,23 +80,25 @@ describe('Blog app', function () {
     describe('when 2 blogs have created', function () {
       beforeEach(function () {
         const auth = {
-          'bearer': JSON.parse(localStorage.getItem('user')).token,
+          bearer: JSON.parse(localStorage.getItem('user')).token,
         }
         cy.request({
           method: 'POST',
           url: 'http://localhost:3003/api/blogs',
           body: blog,
           auth,
-        }).then(() => {
-          return cy.request({
-            method: 'POST',
-            url: 'http://localhost:3003/api/blogs',
-            body: blog2,
-            auth,
-          })
-        }).then(() => {
-          cy.visit('http://localhost:3000')
         })
+          .then(() => {
+            return cy.request({
+              method: 'POST',
+              url: 'http://localhost:3003/api/blogs',
+              body: blog2,
+              auth,
+            })
+          })
+          .then(() => {
+            cy.visit('http://localhost:3000')
+          })
       })
       it('blogs are ordered according to likes with the blog with the most likes being first', function () {
         cy.get('.blog').first().contains(blog.title)

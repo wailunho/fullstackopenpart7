@@ -5,16 +5,16 @@ import { render, screen } from '@testing-library/react'
 import AddBlogForm from './AddBlogForm'
 
 const blog = {
-  'title': 'Fun with chinchilla',
-  'author': 'John Doe',
-  'url': 'https://john-doe-890.com',
-  'likes': 20,
-  'user': {
-    'username': 'hellas',
-    'name': 'H Ella',
-    'id': '621c2c14e8a090cb5d453652',
+  title: 'Fun with chinchilla',
+  author: 'John Doe',
+  url: 'https://john-doe-890.com',
+  likes: 20,
+  user: {
+    username: 'hellas',
+    name: 'H Ella',
+    id: '621c2c14e8a090cb5d453652',
   },
-  'id': '621c2c14e8a090cb5d45365a',
+  id: '621c2c14e8a090cb5d45365a',
 }
 const handleAddBlog = () => {}
 
@@ -24,7 +24,7 @@ describe('<AddBlogForm />', () => {
   test('clicking "like" twice, the component received as props is called twice', () => {
     const mockHandler = jest.fn()
 
-    render(<AddBlogForm handleAddBlog={handleAddBlog}  />)
+    render(<AddBlogForm handleAddBlog={handleAddBlog} />)
 
     const button = screen.getByText('view')
     userEvent.click(button)

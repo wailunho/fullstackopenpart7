@@ -20,9 +20,9 @@ const App = () => {
   const addBlogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(getSortedBlogsByLikes(blogs)),
-    )
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(getSortedBlogsByLikes(blogs)))
   }, [])
 
   useEffect(() => {
@@ -40,7 +40,9 @@ const App = () => {
 
   const showMsg = (msg) => {
     setMessage(msg)
-    setTimeout(() => {setMessage('')}, 5000)
+    setTimeout(() => {
+      setMessage('')
+    }, 5000)
   }
 
   const showSuccessMsg = (msg) => {
@@ -110,7 +112,9 @@ const App = () => {
         const id = blog.id
         const newObj = Object.assign({}, blog, { likes: blog.likes + 1 })
         await blogService.update(id, newObj)
-        setBlogs(getSortedBlogsByLikes(blogs.map(x => x.id === id ? newObj : x)))
+        setBlogs(
+          getSortedBlogsByLikes(blogs.map((x) => (x.id === id ? newObj : x))),
+        )
       } catch (e) {
         handleError(e)
       }
@@ -124,7 +128,7 @@ const App = () => {
         if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
           const id = blog.id
           await blogService.remove(id)
-          setBlogs(getSortedBlogsByLikes(blogs.filter(x => x.id !== id)))
+          setBlogs(getSortedBlogsByLikes(blogs.filter((x) => x.id !== id)))
         }
       } catch (e) {
         handleError(e)
@@ -138,8 +142,23 @@ const App = () => {
         <h2>Log in to application</h2>
         <Notification message={message} type={messageType} />
         <form id="login" onSubmit={handleLogin}>
-          <div>username <input id="username" onChange={({ target }) => setUsername(target.value)} value={username} /></div>
-          <div>password <input id="password" type="password" onChange={({ target }) => setPassword(target.value)} value={password} /></div>
+          <div>
+            username{' '}
+            <input
+              id="username"
+              onChange={({ target }) => setUsername(target.value)}
+              value={username}
+            />
+          </div>
+          <div>
+            password{' '}
+            <input
+              id="password"
+              type="password"
+              onChange={({ target }) => setPassword(target.value)}
+              value={password}
+            />
+          </div>
           <div>
             <button type="submit">login</button>
           </div>
@@ -151,16 +170,34 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <Notification message={message} type={messageType} />
-        <div>{user.name} logged in <button onClick={handleLogout}>logout</button></div>
+        <div>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </div>
         <br></br>
-        <button style={{ display: isBlogFormVisible ? 'none' : '' }} onClick={() => setIsBlogFormVisible(true)}>new blog</button>
+        <button
+          style={{ display: isBlogFormVisible ? 'none' : '' }}
+          onClick={() => setIsBlogFormVisible(true)}
+        >
+          new blog
+        </button>
         <div style={{ display: isBlogFormVisible ? '' : 'none' }}>
           <AddBlogForm ref={addBlogFormRef} handleAddBlog={handleAddBlog} />
         </div>
-        <button style={{ display: isBlogFormVisible ? '' : 'none' }} onClick={() => setIsBlogFormVisible(false)}>cancel</button>
-        {blogs.map(blog =>
-          <Blog key={blog.id} handleLike={handleLike} handleDelete={handleDelete} blog={blog} currentUser={user}/>,
-        )}
+        <button
+          style={{ display: isBlogFormVisible ? '' : 'none' }}
+          onClick={() => setIsBlogFormVisible(false)}
+        >
+          cancel
+        </button>
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            handleLike={handleLike}
+            handleDelete={handleDelete}
+            blog={blog}
+            currentUser={user}
+          />
+        ))}
       </div>
     )
   }

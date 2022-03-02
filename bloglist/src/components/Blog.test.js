@@ -5,16 +5,16 @@ import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 
 const blog = {
-  'title': 'Fun with chinchilla',
-  'author': 'John Doe',
-  'url': 'https://john-doe-890.com',
-  'likes': 20,
-  'user': {
-    'username': 'hellas',
-    'name': 'H Ella',
-    'id': '621c2c14e8a090cb5d453652',
+  title: 'Fun with chinchilla',
+  author: 'John Doe',
+  url: 'https://john-doe-890.com',
+  likes: 20,
+  user: {
+    username: 'hellas',
+    name: 'H Ella',
+    id: '621c2c14e8a090cb5d453652',
   },
-  'id': '621c2c14e8a090cb5d45365a',
+  id: '621c2c14e8a090cb5d45365a',
 }
 const handleLike = () => {}
 const handleDelete = () => {}
@@ -26,14 +26,28 @@ let container
 
 describe('<Blog />', () => {
   test('renders blog initially', () => {
-    container = render(<Blog blog={blog} handleLike={handleLike} handleDelete={handleDelete} currentUser={currentUser} />).container
+    container = render(
+      <Blog
+        blog={blog}
+        handleLike={handleLike}
+        handleDelete={handleDelete}
+        currentUser={currentUser}
+      />
+    ).container
     const ele = screen.getByText(`${blog.title} ${blog.author}`)
     const ele2 = container.querySelector('.blog-detail')
     expect(ele).toBeDefined()
     expect(ele2).toHaveStyle('display: none')
   })
   test('renders blog after clicking "view"', () => {
-    container = render(<Blog blog={blog} handleLike={handleLike} handleDelete={handleDelete} currentUser={currentUser} />).container
+    container = render(
+      <Blog
+        blog={blog}
+        handleLike={handleLike}
+        handleDelete={handleDelete}
+        currentUser={currentUser}
+      />
+    ).container
     const ele = screen.getByText(`${blog.title} ${blog.author}`)
     const ele2 = container.querySelector('.blog-detail')
     const button = screen.getByText('view')
@@ -44,7 +58,14 @@ describe('<Blog />', () => {
   test('clicking "like" twice, the component received as props is called twice', () => {
     const mockHandler = jest.fn()
 
-    render(<Blog blog={blog} handleLike={mockHandler} handleDelete={handleDelete} currentUser={currentUser} />)
+    render(
+      <Blog
+        blog={blog}
+        handleLike={mockHandler}
+        handleDelete={handleDelete}
+        currentUser={currentUser}
+      />
+    )
 
     const button = screen.getByText('view')
     userEvent.click(button)
