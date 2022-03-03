@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import AddBlogForm from './components/AddBlogForm'
 import Notification from './components/Notification'
-import loginService from './services/login'
 import { setErrorNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, setToken } from './reducers/blogReducer'
+import { logout, initializeUser, login } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(({ blogs }) => blogs)
+  const user = useSelector(({ user }) => user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const [isBlogFormVisible, setIsBlogFormVisible] = useState(false)
 
   useEffect(() => {
@@ -20,31 +20,25 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-    const user = window.localStorage.getItem('user')
+    dispatch(initializeUser())
+  }, [dispatch])
+
+  useEffect(() => {
     if (user) {
-      const u = JSON.parse(user)
-      setUser(u)
-      dispatch(setToken(u.token))
+      dispatch(setToken(user.token))
     }
-  }, [])
+  }, [user])
 
   const handleLogout = () => {
-    window.localStorage.removeItem('user')
-    setUser(null)
+    dispatch(logout())
   }
 
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const user = await loginService.login({
-        username,
-        password
-      })
-      window.localStorage.setItem('user', JSON.stringify(user))
-      setUser(user)
+      dispatch(login(username, password))
       setUsername('')
       setPassword('')
-      dispatch(setToken(user.token))
     } catch (e) {
       dispatch(setErrorNotification('Wrong credentials', 5000))
     }
