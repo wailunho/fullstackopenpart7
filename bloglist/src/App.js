@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import AddBlogForm from './components/AddBlogForm'
 import Notification from './components/Notification'
 import loginService from './services/login'
-import {
-  setSuccessNotification,
-  setErrorNotification
-} from './reducers/notificationReducer'
-import { addBlog, removeBlog, updateBlog } from './reducers/blogReducer'
+import { setErrorNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, setToken } from './reducers/blogReducer'
 
@@ -18,8 +14,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [isBlogFormVisible, setIsBlogFormVisible] = useState(false)
-
-  const addBlogFormRef = useRef()
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -33,14 +27,6 @@ const App = () => {
       dispatch(setToken(u.token))
     }
   }, [])
-
-  const handleError = (e) => {
-    if (e.response && e.response.data && e.response.data.error) {
-      dispatch(setErrorNotification(e.response.data.error, 5000))
-    } else {
-      dispatch(setErrorNotification(e.message, 5000))
-    }
-  }
 
   const handleLogout = () => {
     window.localStorage.removeItem('user')
@@ -61,56 +47,6 @@ const App = () => {
       dispatch(setToken(user.token))
     } catch (e) {
       dispatch(setErrorNotification('Wrong credentials', 5000))
-    }
-  }
-
-  const handleAddBlog = async (e) => {
-    e.preventDefault()
-    try {
-      const c = addBlogFormRef.current
-      const { title, author, url } = c
-      dispatch(
-        addBlog({
-          title,
-          author,
-          url
-        })
-      )
-      dispatch(
-        setSuccessNotification(`a new blog ${title} by ${author} added`, 5000)
-      )
-      c.setTitle('')
-      c.setAuthor('')
-      c.setUrl('')
-      setIsBlogFormVisible(false)
-    } catch (e) {
-      handleError(e)
-    }
-  }
-
-  const handleLike = (blog) => {
-    return async (e) => {
-      e.preventDefault()
-      try {
-        const id = blog.id
-        const newObj = { ...blog, likes: blog.likes + 1 }
-        dispatch(updateBlog(id, newObj))
-      } catch (e) {
-        handleError(e)
-      }
-    }
-  }
-
-  const handleDelete = (blog) => {
-    return async (e) => {
-      e.preventDefault()
-      try {
-        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-          dispatch(removeBlog(blog.id))
-        }
-      } catch (e) {
-        handleError(e)
-      }
     }
   }
 
@@ -159,7 +95,7 @@ const App = () => {
           new blog
         </button>
         <div style={{ display: isBlogFormVisible ? '' : 'none' }}>
-          <AddBlogForm ref={addBlogFormRef} handleAddBlog={handleAddBlog} />
+          <AddBlogForm setIsBlogFormVisible={setIsBlogFormVisible} />
         </div>
         <button
           style={{ display: isBlogFormVisible ? '' : 'none' }}
@@ -168,13 +104,7 @@ const App = () => {
           cancel
         </button>
         {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            handleLike={handleLike}
-            handleDelete={handleDelete}
-            blog={blog}
-            currentUser={user}
-          />
+          <Blog key={blog.id} blog={blog} currentUser={user} />
         ))}
       </div>
     )

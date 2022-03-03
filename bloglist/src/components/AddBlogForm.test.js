@@ -18,8 +18,6 @@ const blog = {
 }
 const handleAddBlog = () => {}
 
-let container
-
 describe('<AddBlogForm />', () => {
   test('clicking "like" twice, the component received as props is called twice', () => {
     const mockHandler = jest.fn()
