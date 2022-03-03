@@ -9,6 +9,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, setToken } from './reducers/blogReducer'
 import { logout, initializeUser, login } from './reducers/userReducer'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -66,7 +72,9 @@ const App = () => {
             />
           </div>
           <div>
-            <button type="submit">login</button>
+            <Button variant="outlined" type="submit">
+              login
+            </Button>
           </div>
         </form>
       </div>
@@ -74,14 +82,33 @@ const App = () => {
   } else {
     return (
       <Router>
-        <div>
-          <h2>blogs</h2>
+        <Container maxWidth="sm">
+          <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Blogs
+                </Typography>
+                <Typography variant="h7" component="div" sx={{ flexGrow: 1 }}>
+                  <Link to="/blogs">Blogs</Link>
+                </Typography>
+                <Typography variant="h7" component="div" sx={{ flexGrow: 1 }}>
+                  <Link to="/users">Users</Link>
+                </Typography>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  {user.name} logged in{' '}
+                </Typography>
+                <Button
+                  color="inherit"
+                  variant="outlined"
+                  onClick={handleLogout}
+                >
+                  logout
+                </Button>
+              </Toolbar>
+            </AppBar>
+          </Box>
           <Notification />
-          <div>
-            <Link to="/blogs">blogs</Link>
-            <Link to="/users">users</Link>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </div>
           <br></br>
           <Routes>
             <Route path="/users" element={<Users />}></Route>
@@ -89,21 +116,23 @@ const App = () => {
               path="/blogs"
               element={
                 <>
-                  <button
+                  <Button
+                    variant="outlined"
                     style={{ display: isBlogFormVisible ? 'none' : '' }}
                     onClick={() => setIsBlogFormVisible(true)}
                   >
                     new blog
-                  </button>
+                  </Button>
                   <div style={{ display: isBlogFormVisible ? '' : 'none' }}>
                     <AddBlogForm setIsBlogFormVisible={setIsBlogFormVisible} />
                   </div>
-                  <button
+                  <Button
+                    variant="outlined"
                     style={{ display: isBlogFormVisible ? '' : 'none' }}
                     onClick={() => setIsBlogFormVisible(false)}
                   >
                     cancel
-                  </button>
+                  </Button>
                   {blogs.map((blog) => (
                     <Blog key={blog.id} blog={blog} />
                   ))}
@@ -113,7 +142,7 @@ const App = () => {
             <Route path="/users/:id" element={<User />}></Route>
             <Route path="/blogs/:id" element={<BlogDetail />}></Route>
           </Routes>
-        </div>
+        </Container>
       </Router>
     )
   }

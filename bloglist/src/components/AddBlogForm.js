@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addBlog } from '../reducers/blogReducer'
+import Button from '@mui/material/Button'
 
 const AddBlogForm = ({ setIsBlogFormVisible }) => {
   const dispatch = useDispatch()
@@ -50,7 +51,9 @@ const AddBlogForm = ({ setIsBlogFormVisible }) => {
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">create</button>
+      <Button variant="outlined" type="submit">
+        create
+      </Button>
     </form>
   )
 }

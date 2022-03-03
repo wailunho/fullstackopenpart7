@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateBlog, addBlogComment } from '../reducers/blogReducer'
 import { useState } from 'react'
+import Button from '@mui/material/Button'
 
 const BlogDetail = () => {
   const id = useParams().id
@@ -35,9 +36,13 @@ const BlogDetail = () => {
       </div>
       <div>
         {blog.likes} likes{' '}
-        <button className="blog-like-btn" onClick={handleLike(blog)}>
+        <Button
+          variant="outlined"
+          className="blog-like-btn"
+          onClick={handleLike(blog)}
+        >
           like
-        </button>
+        </Button>
       </div>
       <div>added by {blog.user.name}</div>
       <div style={{ display: blog.comments.length ? '' : 'none' }}>
@@ -46,7 +51,9 @@ const BlogDetail = () => {
           onChange={({ target }) => setComment(target.value)}
           value={comment}
         />
-        <button onClick={handleAddComment(comment)}>add comment</button>
+        <Button variant="outlined" onClick={handleAddComment(comment)}>
+          add comment
+        </Button>
         <ul>
           {blog.comments.map((x) => (
             <li key={x}>{x}</li>
