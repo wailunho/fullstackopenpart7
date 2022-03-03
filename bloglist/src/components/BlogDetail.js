@@ -45,6 +45,14 @@ const BlogDetail = () => {
         </button>
       </div>
       <div>added by {blog.user.name}</div>
+      <div style={{ display: blog.comments.length ? '' : 'none' }}>
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
