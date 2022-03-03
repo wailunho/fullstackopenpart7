@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 const baseUrl = '/api/blogs'
 
 let token = null
@@ -29,10 +30,14 @@ const remove = async (id) => {
   return await axios.delete(`${baseUrl}/${id}`, config)
 }
 
+const addComment = async (id, comment) => {
+  return await axios.post(`${baseUrl}/${id}/comments`, { comment }, config)
+}
 export default {
   getAll,
   setToken,
   create,
   update,
-  remove
+  remove,
+  addComment
 }

@@ -1,11 +1,13 @@
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { setErrorNotification } from '../reducers/notificationReducer'
-import { updateBlog } from '../reducers/blogReducer'
+import { updateBlog, addBlogComment } from '../reducers/blogReducer'
+import { useState } from 'react'
 
 const BlogDetail = () => {
   const id = useParams().id
   const dispatch = useDispatch()
+  const [comment, setComment] = useState('')
   const blog = useSelector(({ blogs }) => blogs.find((x) => x.id === id))
 
   const handleError = (e) => {
@@ -20,9 +22,19 @@ const BlogDetail = () => {
     return async (e) => {
       e.preventDefault()
       try {
-        const id = blog.id
         const newObj = { ...blog, likes: blog.likes + 1 }
         dispatch(updateBlog(id, newObj))
+      } catch (e) {
+        handleError(e)
+      }
+    }
+  }
+  const handleAddComment = (comment) => {
+    return async (e) => {
+      e.preventDefault()
+      try {
+        dispatch(addBlogComment(id, comment))
+        setComment('')
       } catch (e) {
         handleError(e)
       }
@@ -47,6 +59,11 @@ const BlogDetail = () => {
       <div>added by {blog.user.name}</div>
       <div style={{ display: blog.comments.length ? '' : 'none' }}>
         <h3>comments</h3>
+        <input
+          onChange={({ target }) => setComment(target.value)}
+          value={comment}
+        />
+        <button onClick={handleAddComment(comment)}>add comment</button>
         <ul>
           {blog.comments.map((x) => (
             <li key={x}>{x}</li>
