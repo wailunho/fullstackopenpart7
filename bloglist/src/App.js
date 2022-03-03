@@ -2,62 +2,43 @@ import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import AddBlogForm from './components/AddBlogForm'
 import Notification from './components/Notification'
-import blogService from './services/blogs'
 import loginService from './services/login'
-
-const MESSAGE_TYPE_SUCCESS = 'success'
-const MESSAGE_TYPE_ERROR = 'error'
+import {
+  setSuccessNotification,
+  setErrorNotification
+} from './reducers/notificationReducer'
+import { addBlog, removeBlog, updateBlog } from './reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs, setToken } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const dispatch = useDispatch()
+  const blogs = useSelector(({ blogs }) => blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState('')
-  const [messageType, setMessageType] = useState(MESSAGE_TYPE_SUCCESS)
   const [isBlogFormVisible, setIsBlogFormVisible] = useState(false)
 
   const addBlogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(getSortedBlogsByLikes(blogs)))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const user = window.localStorage.getItem('user')
     if (user) {
       const u = JSON.parse(user)
       setUser(u)
-      blogService.setToken(u.token)
+      dispatch(setToken(u.token))
     }
   }, [])
 
-  const getSortedBlogsByLikes = (blogs) => {
-    return blogs.sort((a, b) => b.likes - a.likes)
-  }
-
-  const showMsg = (msg) => {
-    setMessage(msg)
-    setTimeout(() => {
-      setMessage('')
-    }, 5000)
-  }
-
-  const showSuccessMsg = (msg) => {
-    setMessageType(MESSAGE_TYPE_SUCCESS)
-    showMsg(msg)
-  }
-
-  const showErrorMsg = (msg) => {
-    setMessageType(MESSAGE_TYPE_ERROR)
-    showMsg(msg)
-  }
-
   const handleError = (e) => {
     if (e.response && e.response.data && e.response.data.error) {
-      showErrorMsg(e.response.data.error)
+      dispatch(setErrorNotification(e.response.data.error, 5000))
     } else {
-      showErrorMsg(e.message)
+      dispatch(setErrorNotification(e.message, 5000))
     }
   }
 
@@ -77,9 +58,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      blogService.setToken(user.token)
+      dispatch(setToken(user.token))
     } catch (e) {
-      showErrorMsg('Wrong credentials')
+      dispatch(setErrorNotification('Wrong credentials', 5000))
     }
   }
 
@@ -87,13 +68,17 @@ const App = () => {
     e.preventDefault()
     try {
       const c = addBlogFormRef.current
-      const newBlog = await blogService.create({
-        title: c.title,
-        author: c.author,
-        url: c.url
-      })
-      setBlogs(getSortedBlogsByLikes(blogs.concat(newBlog)))
-      showSuccessMsg(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+      const { title, author, url } = c
+      dispatch(
+        addBlog({
+          title,
+          author,
+          url
+        })
+      )
+      dispatch(
+        setSuccessNotification(`a new blog ${title} by ${author} added`, 5000)
+      )
       c.setTitle('')
       c.setAuthor('')
       c.setUrl('')
@@ -108,11 +93,8 @@ const App = () => {
       e.preventDefault()
       try {
         const id = blog.id
-        const newObj = Object.assign({}, blog, { likes: blog.likes + 1 })
-        await blogService.update(id, newObj)
-        setBlogs(
-          getSortedBlogsByLikes(blogs.map((x) => (x.id === id ? newObj : x)))
-        )
+        const newObj = { ...blog, likes: blog.likes + 1 }
+        dispatch(updateBlog(id, newObj))
       } catch (e) {
         handleError(e)
       }
@@ -124,9 +106,7 @@ const App = () => {
       e.preventDefault()
       try {
         if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-          const id = blog.id
-          await blogService.remove(id)
-          setBlogs(getSortedBlogsByLikes(blogs.filter((x) => x.id !== id)))
+          dispatch(removeBlog(blog.id))
         }
       } catch (e) {
         handleError(e)
@@ -138,7 +118,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={message} type={messageType} />
+        <Notification />
         <form id="login" onSubmit={handleLogin}>
           <div>
             username{' '}
@@ -167,7 +147,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <Notification message={message} type={messageType} />
+        <Notification />
         <div>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </div>
