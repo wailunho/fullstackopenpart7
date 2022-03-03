@@ -1,8 +1,4 @@
 import { useState } from 'react'
-import {
-  setSuccessNotification,
-  setErrorNotification
-} from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { addBlog } from '../reducers/blogReducer'
 
@@ -12,34 +8,19 @@ const AddBlogForm = ({ setIsBlogFormVisible }) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleError = (e) => {
-    if (e.response && e.response.data && e.response.data.error) {
-      dispatch(setErrorNotification(e.response.data.error, 5000))
-    } else {
-      dispatch(setErrorNotification(e.message, 5000))
-    }
-  }
-
   const handleAddBlog = async (e) => {
     e.preventDefault()
-    try {
-      dispatch(
-        addBlog({
-          title,
-          author,
-          url
-        })
-      )
-      dispatch(
-        setSuccessNotification(`a new blog ${title} by ${author} added`, 5000)
-      )
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setIsBlogFormVisible(false)
-    } catch (e) {
-      handleError(e)
-    }
+    dispatch(
+      addBlog({
+        title,
+        author,
+        url
+      })
+    )
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    setIsBlogFormVisible(false)
   }
 
   return (

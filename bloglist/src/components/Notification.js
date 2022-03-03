@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { useSelector } from 'react-redux'
+import styled from '@emotion/styled'
 
 const Container = styled.div`
   font-size: 20px;

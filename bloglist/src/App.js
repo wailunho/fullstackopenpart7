@@ -5,7 +5,6 @@ import Users from './components/Users'
 import User from './components/User'
 import BlogDetail from './components/BlogDetail'
 import Notification from './components/Notification'
-import { setErrorNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, setToken } from './reducers/blogReducer'
 import { logout, initializeUser, login } from './reducers/userReducer'
@@ -38,13 +37,9 @@ const App = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    try {
-      dispatch(login(username, password))
-      setUsername('')
-      setPassword('')
-    } catch (e) {
-      dispatch(setErrorNotification('Wrong credentials', 5000))
-    }
+    dispatch(login(username, password))
+    setUsername('')
+    setPassword('')
   }
 
   if (!user) {

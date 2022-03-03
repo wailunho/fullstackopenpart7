@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { setErrorNotification } from '../reducers/notificationReducer'
 import { updateBlog, addBlogComment } from '../reducers/blogReducer'
 import { useState } from 'react'
 
@@ -10,34 +9,18 @@ const BlogDetail = () => {
   const [comment, setComment] = useState('')
   const blog = useSelector(({ blogs }) => blogs.find((x) => x.id === id))
 
-  const handleError = (e) => {
-    if (e.response && e.response.data && e.response.data.error) {
-      dispatch(setErrorNotification(e.response.data.error, 5000))
-    } else {
-      dispatch(setErrorNotification(e.message, 5000))
-    }
-  }
-
   const handleLike = (blog) => {
     return async (e) => {
       e.preventDefault()
-      try {
-        const newObj = { ...blog, likes: blog.likes + 1 }
-        dispatch(updateBlog(id, newObj))
-      } catch (e) {
-        handleError(e)
-      }
+      const newObj = { ...blog, likes: blog.likes + 1 }
+      dispatch(updateBlog(id, newObj))
     }
   }
   const handleAddComment = (comment) => {
     return async (e) => {
       e.preventDefault()
-      try {
-        dispatch(addBlogComment(id, comment))
-        setComment('')
-      } catch (e) {
-        handleError(e)
-      }
+      dispatch(addBlogComment(id, comment))
+      setComment('')
     }
   }
 

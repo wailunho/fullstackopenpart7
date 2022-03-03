@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+import {
+  setErrorNotification,
+  setSuccessNotification
+} from './notificationReducer'
 
 const getSortedBlogsByLikes = (blogs) => {
   return blogs.sort((a, b) => b.likes - a.likes)
@@ -35,6 +39,14 @@ const blogSlice = createSlice({
 
 const { set, remove, add, update, addComment } = blogSlice.actions
 
+const handleError = (dispatch, e) => {
+  if (e.response && e.response.data && e.response.data.error) {
+    dispatch(setErrorNotification(e.response.data.error, 5000))
+  } else {
+    dispatch(setErrorNotification(e.message, 5000))
+  }
+}
+
 export const initializeBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll()
@@ -44,33 +56,52 @@ export const initializeBlogs = () => {
 
 export const addBlog = ({ title, author, url }) => {
   return async (dispatch) => {
-    const newBlog = await blogService.create({
-      title,
-      author,
-      url
-    })
-    dispatch(add(newBlog))
+    try {
+      const newBlog = await blogService.create({
+        title,
+        author,
+        url
+      })
+      dispatch(add(newBlog))
+      dispatch(
+        setSuccessNotification(`a new blog ${title} by ${author} added`, 5000)
+      )
+    } catch (e) {
+      handleError(dispatch, e)
+    }
   }
 }
 
 export const updateBlog = (id, data) => {
   return async (dispatch) => {
-    await blogService.update(id, data)
-    dispatch(update({ id, data }))
+    try {
+      await blogService.update(id, data)
+      dispatch(update({ id, data }))
+    } catch (e) {
+      handleError(dispatch, e)
+    }
   }
 }
 
 export const removeBlog = (id) => {
   return async (dispatch) => {
-    await blogService.remove(id)
-    dispatch(remove(id))
+    try {
+      await blogService.remove(id)
+      dispatch(remove(id))
+    } catch (e) {
+      handleError(dispatch, e)
+    }
   }
 }
 
 export const addBlogComment = (id, comment) => {
   return async (dispatch) => {
-    await blogService.addComment(id, comment)
-    dispatch(addComment({ id, comment }))
+    try {
+      await blogService.addComment(id, comment)
+      dispatch(addComment({ id, comment }))
+    } catch (e) {
+      handleError(dispatch, e)
+    }
   }
 }
 
